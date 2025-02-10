@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Copy, RefreshCw, Timer } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 import type { Address } from '@/types/database';
 
 const EmailBox = () => {
