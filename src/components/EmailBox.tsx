@@ -1,15 +1,17 @@
 
 import { useState, useEffect } from 'react';
-import { Copy, RefreshCw } from 'lucide-react';
+import { Copy, RefreshCw, Timer } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const EmailBox = () => {
   const [email, setEmail] = useState('');
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const { toast } = useToast();
 
   const generateEmail = () => {
     const randomString = Math.random().toString(36).substring(2, 8);
     setEmail(`${randomString}@tempomail.temp`);
+    setTimeLeft(600); // Reset timer when generating new email
   };
 
   const copyEmail = async () => {
@@ -20,9 +22,38 @@ const EmailBox = () => {
     });
   };
 
+  const resetTimer = () => {
+    setTimeLeft(600);
+    toast({
+      title: "Timer Reset",
+      description: "Email expiration timer has been reset to 10 minutes.",
+    });
+  };
+
   useEffect(() => {
     generateEmail();
   }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(timer);
+          generateEmail(); // Generate new email when timer expires
+          return 600;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="glass p-6 rounded-lg w-full max-w-xl mx-auto slide-up">
@@ -45,6 +76,23 @@ const EmailBox = () => {
               <RefreshCw className="w-5 h-5 text-primary" />
             </button>
           </div>
+        </div>
+        
+        <div className="flex items-center justify-between bg-white/40 rounded-lg p-4 border border-gray-100">
+          <div className="flex items-center space-x-2">
+            <Timer className="w-5 h-5 text-primary" />
+            <span className="text-lg font-medium text-gray-800">
+              Expires in: {formatTime(timeLeft)}
+            </span>
+          </div>
+          <button
+            onClick={resetTimer}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors duration-200"
+            aria-label="Reset timer"
+          >
+            <RefreshCw className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Reset Timer</span>
+          </button>
         </div>
       </div>
     </div>
