@@ -9,7 +9,69 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      addresses: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          address_id: string
+          body: string
+          id: string
+          received_at: string
+          sender: string
+          subject: string
+        }
+        Insert: {
+          address_id: string
+          body: string
+          id?: string
+          received_at?: string
+          sender: string
+          subject: string
+        }
+        Update: {
+          address_id?: string
+          body?: string
+          id?: string
+          received_at?: string
+          sender?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_address"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
