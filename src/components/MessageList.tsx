@@ -3,6 +3,7 @@ import { Mail } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const MessageList = () => {
   const { toast } = useToast();
