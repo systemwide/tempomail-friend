@@ -1,7 +1,13 @@
 
-const AdBanner = () => {
+import { cn } from "@/lib/utils";
+
+interface AdBannerProps {
+  className?: string;
+}
+
+const AdBanner = ({ className }: AdBannerProps) => {
   return (
-    <div className="w-full max-w-xl mx-auto mt-6 p-4 glass rounded-lg text-center fade-in">
+    <div className={cn("max-w-xl mx-auto p-4 glass rounded-lg text-center fade-in", className)}>
       <p className="text-sm text-gray-500">Advertisement Space</p>
     </div>
   );
