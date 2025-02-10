@@ -2,15 +2,46 @@
 import { useState, useEffect } from 'react';
 import { Copy, RefreshCw, Timer } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from '@/lib/supabaseClient';
+import type { Address } from '@/types/database';
 
 const EmailBox = () => {
   const [email, setEmail] = useState('');
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
+  const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const generateEmail = () => {
+  const generateEmail = async () => {
     const randomString = Math.random().toString(36).substring(2, 8);
-    setEmail(`${randomString}@tempomail.temp`);
+    const newEmail = `${randomString}@tempomail.temp`;
+    
+    // Calculate expiration time (10 minutes from now)
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+
+    // Insert new address into Supabase
+    const { data, error } = await supabase
+      .from('addresses')
+      .insert([
+        {
+          email: newEmail,
+          expires_at: expiresAt.toISOString(),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating email address:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate email address. Please try again.",
+      });
+      return;
+    }
+
+    setEmail(newEmail);
+    setCurrentAddressId(data.id);
     setTimeLeft(600); // Reset timer when generating new email
   };
 
@@ -22,7 +53,26 @@ const EmailBox = () => {
     });
   };
 
-  const resetTimer = () => {
+  const resetTimer = async () => {
+    if (!currentAddressId) return;
+
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+
+    const { error } = await supabase
+      .from('addresses')
+      .update({ expires_at: expiresAt.toISOString() })
+      .eq('id', currentAddressId);
+
+    if (error) {
+      console.error('Error resetting timer:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset timer. Please try again.",
+      });
+      return;
+    }
+
     setTimeLeft(600);
     toast({
       title: "Timer Reset",
@@ -38,7 +88,6 @@ const EmailBox = () => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 0) {
-          clearInterval(timer);
           generateEmail(); // Generate new email when timer expires
           return 600;
         }
