@@ -19,7 +19,7 @@ const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
     const randomString = Math.random().toString(36).substring(2, 8);
     const newEmail = `${randomString}@tenminuteemails.com`;
     
-    // Calculate expiration time (10 minutes from now)
+    // Calculate expiration time (10 minutes from now) in UTC
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 
@@ -61,6 +61,7 @@ const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
   const resetTimer = async () => {
     if (!currentAddressId) return;
 
+    // Calculate new expiration time in UTC
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 
