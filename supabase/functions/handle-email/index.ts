@@ -31,43 +31,39 @@ serve(async (req) => {
       const jsonData = await req.json();
       console.log('Received JSON data:', jsonData);
       
-      // For testing purposes, return early with the data we received
-      return new Response(
-        JSON.stringify({ received: jsonData }),
-        { 
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      )
+      recipient = jsonData.recipient?.trim();
+      sender = jsonData.sender?.trim();
+      subject = jsonData.subject?.trim();
+      bodyPlain = jsonData['body-plain']?.trim();
     } else if (contentType?.includes('multipart/form-data') || contentType?.includes('application/x-www-form-urlencoded')) {
       // Handle form data
       const formData = await req.formData()
       console.log('Received form data:', Object.fromEntries(formData.entries()));
       
-      recipient = formData.get('recipient') as string
-      sender = formData.get('sender') as string
-      subject = formData.get('subject') as string
-      bodyPlain = formData.get('body-plain') as string
-
-      if (!recipient || !sender || !subject || !bodyPlain) {
-        console.error('Missing required fields in form data');
-        return new Response(
-          JSON.stringify({ 
-            error: 'Missing required fields',
-            received: Object.fromEntries(formData.entries())
-          }),
-          { 
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        )
-      }
+      recipient = (formData.get('recipient') as string | null)?.trim();
+      sender = (formData.get('sender') as string | null)?.trim();
+      subject = (formData.get('subject') as string | null)?.trim();
+      bodyPlain = (formData.get('body-plain') as string | null)?.trim();
     } else {
       console.error('Unsupported content type:', contentType);
       return new Response(
         JSON.stringify({ error: 'Unsupported content type' }),
         { 
           status: 415,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+
+    if (!recipient || !sender || !subject || !bodyPlain) {
+      console.error('Missing required fields');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Missing required fields',
+          received: { recipient, sender, subject, bodyPlain }
+        }),
+        { 
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
