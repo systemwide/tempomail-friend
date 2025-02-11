@@ -8,7 +8,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -19,16 +18,29 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const body = await req.json()
-    console.log('Received email:', body)
+    const formData = await req.formData()
+    
+    // Extract email data from Mailgun's format
+    const recipient = formData.get('recipient') as string
+    const sender = formData.get('sender') as string
+    const subject = formData.get('subject') as string
+    const bodyPlain = formData.get('body-plain') as string
 
-    const { from, to, subject, text } = body
+    console.log('Received email:', {
+      to: recipient,
+      from: sender,
+      subject: subject,
+      body: bodyPlain
+    })
+
+    // Extract the local part of the email address (before @)
+    const to = recipient.split('@')[0]
 
     // Find the address record
     const { data: address, error: addressError } = await supabase
       .from('addresses')
       .select('id')
-      .eq('email', to)
+      .eq('email', `${to}@tenminuteemails.com`)
       .single()
 
     if (addressError || !address) {
@@ -47,9 +59,9 @@ serve(async (req) => {
       .from('messages')
       .insert({
         address_id: address.id,
-        sender: from,
+        sender: sender,
         subject: subject,
-        body: text,
+        body: bodyPlain,
         received_at: new Date().toISOString()
       })
 

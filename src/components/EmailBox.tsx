@@ -13,7 +13,7 @@ const EmailBox = () => {
 
   const generateEmail = async () => {
     const randomString = Math.random().toString(36).substring(2, 8);
-    const newEmail = `${randomString}@tempomail.temp`;
+    const newEmail = `${randomString}@tenminuteemails.com`;
     
     // Calculate expiration time (10 minutes from now)
     const expiresAt = new Date();
