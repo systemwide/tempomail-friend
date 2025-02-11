@@ -8,7 +8,7 @@ const Index = () => {
   const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 select-text">
       <AdBanner className="w-full py-4" />
       <div className="flex px-4">
         <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
