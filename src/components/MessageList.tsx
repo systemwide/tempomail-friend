@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import type { Message } from '@/types/database';
 
-const MessageList = () => {
+interface MessageListProps {
+  currentAddressId?: string | null;
+}
+
+const MessageList = ({ currentAddressId }: MessageListProps) => {
   const { toast } = useToast();
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -15,10 +19,17 @@ const MessageList = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
+      if (!currentAddressId) {
+        setMessages([]);
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('messages')
           .select('*')
+          .eq('address_id', currentAddressId)
           .order('received_at', { ascending: false });
 
         if (error) throw error;
@@ -41,11 +52,14 @@ const MessageList = () => {
     const subscription = supabase
       .channel('messages')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'messages' },
+        { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'messages',
+          filter: `address_id=eq.${currentAddressId}`
+        },
         (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setMessages(prev => [payload.new as Message, ...prev]);
-          }
+          setMessages(prev => [payload.new as Message, ...prev]);
         }
       )
       .subscribe();
@@ -53,7 +67,7 @@ const MessageList = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, [toast, currentAddressId]);
 
   const handleMessageClick = (messageId: string) => {
     setSelectedMessageId(messageId);

@@ -5,7 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
 import type { Address } from '@/types/database';
 
-const EmailBox = () => {
+interface EmailBoxProps {
+  onAddressChange?: (addressId: string | null) => void;
+}
+
+const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
   const [email, setEmail] = useState('');
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
@@ -42,6 +46,7 @@ const EmailBox = () => {
 
     setEmail(newEmail);
     setCurrentAddressId(data.id);
+    onAddressChange?.(data.id);
     setTimeLeft(600); // Reset timer when generating new email
   };
 
