@@ -1,6 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,14 +20,58 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const formData = await req.formData()
-    console.log('Received form data:', Object.fromEntries(formData.entries()));
-    
-    // Extract email data from Mailgun's format
-    const recipient = formData.get('recipient') as string
-    const sender = formData.get('sender') as string
-    const subject = formData.get('subject') as string
-    const bodyPlain = formData.get('body-plain') as string
+    let recipient, sender, subject, bodyPlain;
+
+    // Check content type to handle both form data and JSON
+    const contentType = req.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+
+    if (contentType?.includes('application/json')) {
+      // Handle JSON data
+      const jsonData = await req.json();
+      console.log('Received JSON data:', jsonData);
+      
+      // For testing purposes, return early with the data we received
+      return new Response(
+        JSON.stringify({ received: jsonData }),
+        { 
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    } else if (contentType?.includes('multipart/form-data') || contentType?.includes('application/x-www-form-urlencoded')) {
+      // Handle form data
+      const formData = await req.formData()
+      console.log('Received form data:', Object.fromEntries(formData.entries()));
+      
+      recipient = formData.get('recipient') as string
+      sender = formData.get('sender') as string
+      subject = formData.get('subject') as string
+      bodyPlain = formData.get('body-plain') as string
+
+      if (!recipient || !sender || !subject || !bodyPlain) {
+        console.error('Missing required fields in form data');
+        return new Response(
+          JSON.stringify({ 
+            error: 'Missing required fields',
+            received: Object.fromEntries(formData.entries())
+          }),
+          { 
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        )
+      }
+    } else {
+      console.error('Unsupported content type:', contentType);
+      return new Response(
+        JSON.stringify({ error: 'Unsupported content type' }),
+        { 
+          status: 415,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
 
     console.log('Parsed email data:', {
       to: recipient,
