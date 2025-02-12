@@ -18,23 +18,31 @@ const Index = () => {
       <AdBanner className="w-full py-4" />
       <div className="flex px-4">
         <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
-        <div className="flex-1 max-w-4xl mx-auto py-12">
-          <div className="text-center mb-12 slide-up">
+        <main className="flex-1 max-w-4xl mx-auto py-12">
+          <header className="text-center mb-12 slide-up">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {t.title}
             </h1>
-            <p className="text-lg text-gray-600 max-w-md mx-auto">
+            <h2 className="text-lg text-gray-600 max-w-md mx-auto">
               {t.subtitle}
-            </p>
-          </div>
+            </h2>
+          </header>
 
-          <EmailBox onAddressChange={setCurrentAddressId} />
-          <MessageList 
-            currentAddressId={currentAddressId}
-            currentLanguage={currentLanguage}
-          />
+          <section aria-label="Email Generator">
+            <h3 className="sr-only">Generate Temporary Email</h3>
+            <EmailBox onAddressChange={setCurrentAddressId} />
+          </section>
+
+          <section aria-label="Messages" className="mt-8">
+            <h3 className="sr-only">Email Messages</h3>
+            <MessageList 
+              currentAddressId={currentAddressId}
+              currentLanguage={currentLanguage}
+            />
+          </section>
+          
           <AdBanner className="mt-6" />
-        </div>
+        </main>
         <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
       </div>
     </div>
