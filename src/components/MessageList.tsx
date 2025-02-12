@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { getTranslation } from "@/lib/translations";
 import type { Message } from '@/types/database';
 
 interface MessageListProps {
@@ -17,6 +18,8 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
+
+  const t = getTranslation(currentLanguage);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -141,16 +144,16 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
       <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words max-w-full overflow-x-auto">
         {translating ? (
           <div className="text-center text-gray-500">
-            Translating...
+            {t.translating}
           </div>
         ) : translatedContent && currentLanguage !== 'en' ? (
           <>
             <div className="mb-4 pb-4 border-b">
-              <div className="text-xs text-gray-500 mb-2">Original:</div>
+              <div className="text-xs text-gray-500 mb-2">{t.original}:</div>
               {message.body}
             </div>
             <div>
-              <div className="text-xs text-gray-500 mb-2">Translated:</div>
+              <div className="text-xs text-gray-500 mb-2">{t.translated}:</div>
               {translatedContent}
             </div>
           </>
@@ -164,7 +167,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
   if (loading) {
     return (
       <div className="glass mt-6 rounded-lg w-full max-w-xl mx-auto fade-in p-4 text-center">
-        Loading messages...
+        {t.loading}
       </div>
     );
   }
@@ -172,7 +175,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
   return (
     <div className="glass mt-6 rounded-lg w-full max-w-xl mx-auto fade-in">
       <div className="p-4 border-b border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-800">Inbox</h2>
+        <h2 className="text-lg font-semibold text-gray-800">{t.inbox}</h2>
       </div>
       
       {selectedMessage ? (
@@ -187,7 +190,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
                 className="flex items-center text-sm text-primary hover:text-primary/80"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Inbox
+                {t.backToInbox}
               </button>
               <div className="flex items-center space-x-2">
                 <button
@@ -247,7 +250,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
           <div className="divide-y divide-gray-100">
             {messages.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
-                No messages yet
+                {t.noMessages}
               </div>
             ) : (
               messages.map((message) => (

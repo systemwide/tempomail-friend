@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getTranslation } from "@/lib/translations";
 
 const LANGUAGES = [
   { code: "en", name: "English" },
@@ -25,6 +26,7 @@ const Index = () => {
   const [currentLanguage, setCurrentLanguage] = useState("en");
 
   const selectedLanguage = LANGUAGES.find(lang => lang.code === currentLanguage);
+  const t = getTranslation(currentLanguage);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 select-text">
@@ -35,7 +37,7 @@ const Index = () => {
           <div className="text-center mb-12 slide-up">
             <div className="flex justify-center items-center gap-2 mb-4">
               <h1 className="text-4xl font-bold text-gray-900">
-                Temporary Email Service
+                {t.title}
               </h1>
               <DropdownMenu>
                 <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2">
@@ -59,7 +61,7 @@ const Index = () => {
               </DropdownMenu>
             </div>
             <p className="text-lg text-gray-600 max-w-md mx-auto">
-              Get an instant disposable email address for secure, anonymous sign-ups
+              {t.subtitle}
             </p>
           </div>
 

@@ -15,6 +15,7 @@ serve(async (req) => {
 
   try {
     const { text, targetLang } = await req.json()
+    console.log('Translation request:', { text, targetLang })
 
     if (!text || !targetLang) {
       throw new Error('Missing required parameters')
@@ -26,8 +27,10 @@ serve(async (req) => {
     url.searchParams.append('q', text)
     url.searchParams.append('langpair', `en|${targetLang}`)
 
+    console.log('Fetching translation from:', url.toString())
     const response = await fetch(url.toString())
     const data = await response.json()
+    console.log('Translation response:', data)
 
     if (!response.ok) {
       throw new Error('Translation service error')
