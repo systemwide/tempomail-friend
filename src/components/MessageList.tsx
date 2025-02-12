@@ -133,8 +133,11 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
               Date: {new Date(selectedMessage.received_at).toLocaleString()}
             </div>
           </div>
-          <ScrollArea className="h-[400px] p-4 bg-white">
-            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: selectedMessage.body }} />
+          <ScrollArea className="h-[400px] bg-white">
+            <div 
+              className="p-4 [&>*]:text-black [&_a]:text-blue-600 [&_a]:underline [&_img]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:p-2 [&_th]:border [&_th]:p-2 [&_p]:my-2 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:my-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:my-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_pre]:bg-gray-100 [&_pre]:p-2 [&_pre]:rounded [&_code]:font-mono [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:rounded"
+              dangerouslySetInnerHTML={{ __html: selectedMessage.body }} 
+            />
           </ScrollArea>
         </div>
       ) : (
