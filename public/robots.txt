@@ -1,0 +1,8 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://tempmail.lovable.dev/sitemap.xml
+
+# Prevent caching of temporary email addresses
+Disallow: /email/*
