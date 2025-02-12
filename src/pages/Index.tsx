@@ -2,6 +2,7 @@
 import EmailBox from "@/components/EmailBox";
 import MessageList from "@/components/MessageList";
 import AdBanner from "@/components/AdBanner";
+import Navigation from "@/components/Navigation";
 import { useState } from "react";
 import { Globe, Check } from "lucide-react";
 import {
@@ -30,6 +31,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 select-text">
+      <Navigation />
       <AdBanner className="w-full py-4" />
       <div className="flex px-4">
         <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
