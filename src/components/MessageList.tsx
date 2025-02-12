@@ -1,8 +1,7 @@
 
-import { Mail } from 'lucide-react';
+import { Mail, X, ArrowLeft, ArrowRight } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import type { Message } from '@/types/database';
@@ -12,7 +11,6 @@ interface MessageListProps {
 }
 
 const MessageList = ({ currentAddressId }: MessageListProps) => {
-  const { toast } = useToast();
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,11 +34,6 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
         setMessages(data || []);
       } catch (error) {
         console.error('Error fetching messages:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load messages. Please try again later.",
-          variant: "destructive",
-        });
       } finally {
         setLoading(false);
       }
@@ -67,18 +60,13 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast, currentAddressId]);
+  }, [currentAddressId]);
 
   const handleMessageClick = (messageId: string) => {
-    setSelectedMessageId(messageId);
-    const message = messages.find(m => m.id === messageId);
-    if (message) {
-      toast({
-        title: message.subject,
-        description: message.body,
-      });
-    }
+    setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
   };
+
+  const selectedMessage = messages.find(m => m.id === selectedMessageId);
 
   if (loading) {
     return (
@@ -93,42 +81,100 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
       <div className="p-4 border-b border-gray-100">
         <h2 className="text-lg font-semibold text-gray-800">Inbox</h2>
       </div>
-      <ScrollArea className="h-[400px]">
-        <div className="divide-y divide-gray-100">
-          {messages.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              No messages yet
-            </div>
-          ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "p-4 hover:bg-white/40 transition-colors duration-200 cursor-pointer",
-                  selectedMessageId === message.id && "bg-white/60"
-                )}
-                onClick={() => handleMessageClick(message.id)}
+      
+      {selectedMessage ? (
+        <div className="fade-in">
+          <div className="p-4 border-b border-gray-100 bg-white/40">
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() => setSelectedMessageId(null)}
+                className="flex items-center text-sm text-primary hover:text-primary/80"
               >
-                <div className="flex items-start space-x-4">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Mail className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {message.subject}
-                    </p>
-                    <p className="text-sm text-gray-500 truncate">{message.sender}</p>
-                    <p className="text-sm text-gray-500 mt-1 truncate">{message.body}</p>
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {new Date(message.received_at).toLocaleString()}
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back to Inbox
+              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
+                    const prevMessage = messages[currentIndex + 1];
+                    if (prevMessage) setSelectedMessageId(prevMessage.id);
+                  }}
+                  className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
+                  disabled={messages.findIndex(m => m.id === selectedMessageId) === messages.length - 1}
+                >
+                  <ArrowLeft className="w-4 h-4 text-primary" />
+                </button>
+                <button
+                  onClick={() => {
+                    const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
+                    const nextMessage = messages[currentIndex - 1];
+                    if (nextMessage) setSelectedMessageId(nextMessage.id);
+                  }}
+                  className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
+                  disabled={messages.findIndex(m => m.id === selectedMessageId) === 0}
+                >
+                  <ArrowRight className="w-4 h-4 text-primary" />
+                </button>
+                <button
+                  onClick={() => setSelectedMessageId(null)}
+                  className="p-1 hover:bg-primary/10 rounded transition-colors"
+                >
+                  <X className="w-4 h-4 text-primary" />
+                </button>
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {selectedMessage.subject}
+            </h3>
+            <div className="text-sm text-gray-600 mb-4">
+              From: {selectedMessage.sender}
+              <br />
+              Date: {new Date(selectedMessage.received_at).toLocaleString()}
+            </div>
+          </div>
+          <ScrollArea className="h-[400px] p-4 bg-white">
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: selectedMessage.body }} />
+          </ScrollArea>
+        </div>
+      ) : (
+        <ScrollArea className="h-[400px]">
+          <div className="divide-y divide-gray-100">
+            {messages.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                No messages yet
+              </div>
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "p-4 hover:bg-white/40 transition-colors duration-200 cursor-pointer",
+                    selectedMessageId === message.id && "bg-white/60"
+                  )}
+                  onClick={() => handleMessageClick(message.id)}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Mail className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {message.subject}
+                      </p>
+                      <p className="text-sm text-gray-500 truncate">{message.sender}</p>
+                      <p className="text-sm text-gray-500 mt-1 truncate">{message.body}</p>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(message.received_at).toLocaleString()}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+              ))
+            )}
+          </div>
+        </ScrollArea>
+      )}
     </div>
   );
 };
