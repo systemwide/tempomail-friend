@@ -1,5 +1,5 @@
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 import type { Message } from '@/types/database';
 
 interface MessageHeaderProps {
