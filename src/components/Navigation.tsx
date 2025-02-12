@@ -1,8 +1,20 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Globe } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const Navigation = () => {
+interface NavigationProps {
+  currentLanguage?: string;
+  onLanguageChange?: (lang: string) => void;
+}
+
+const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProps) => {
   const location = useLocation();
   
   const links = [
@@ -10,6 +22,15 @@ const Navigation = () => {
     { href: "/features", label: "Features" },
     { href: "/blog", label: "Blog" },
     { href: "/faq", label: "FAQ" },
+  ];
+
+  const LANGUAGES = [
+    { code: "en", name: "English" },
+    { code: "es", name: "Español" },
+    { code: "fr", name: "Français" },
+    { code: "de", name: "Deutsch" },
+    { code: "zh", name: "中文" },
+    { code: "ja", name: "日本語" },
   ];
 
   return (
@@ -20,7 +41,7 @@ const Navigation = () => {
             TempMail
           </Link>
           
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -35,6 +56,25 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+            
+            {onLanguageChange && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                  <Globe className="w-4 h-4 mr-2" />
+                  <span>{LANGUAGES.find(lang => lang.code === currentLanguage)?.name}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {LANGUAGES.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => onLanguageChange(lang.code)}
+                    >
+                      {lang.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>
