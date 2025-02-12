@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 const Blog = () => {
   const posts = [
@@ -33,6 +34,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <Navigation />
       <div className="max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">Blog</h1>
         
