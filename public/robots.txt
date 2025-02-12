@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tempmail.lovable.dev/sitemap.xml
+Sitemap: https://tenminuteemails.com/sitemap.xml
 
 # Prevent caching of temporary email addresses
 Disallow: /email/*
