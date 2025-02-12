@@ -1,5 +1,4 @@
-
-import { Mail, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Mail, X, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
@@ -14,6 +13,7 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -68,6 +68,61 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
 
   const selectedMessage = messages.find(m => m.id === selectedMessageId);
 
+  const extractUrls = (body: string): string[] => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return body.match(urlRegex) || [];
+  };
+
+  const handleUrlClick = (url: string) => {
+    setSelectedUrl(url);
+  };
+
+  const renderMessageContent = (message: Message) => {
+    if (selectedUrl) {
+      return (
+        <div className="relative h-full">
+          <div className="absolute top-0 left-0 right-0 bg-white/90 p-2 border-b flex items-center justify-between">
+            <span className="text-sm truncate flex-1 mr-4">{selectedUrl}</span>
+            <button
+              onClick={() => setSelectedUrl(null)}
+              className="p-1 hover:bg-primary/10 rounded transition-colors"
+            >
+              <X className="w-4 h-4 text-primary" />
+            </button>
+          </div>
+          <iframe
+            src={selectedUrl}
+            className="w-full h-[400px] border-0"
+            sandbox="allow-scripts allow-same-origin allow-popups"
+          />
+        </div>
+      );
+    }
+
+    const urls = extractUrls(message.body);
+    const parts = message.body.split(/(https?:\/\/[^\s]+)/g);
+
+    return (
+      <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words">
+        {parts.map((part, index) => {
+          if (urls.includes(part)) {
+            return (
+              <button
+                key={index}
+                onClick={() => handleUrlClick(part)}
+                className="text-blue-600 underline hover:text-blue-800 inline-flex items-center gap-1"
+              >
+                {part}
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            );
+          }
+          return <span key={index}>{part}</span>;
+        })}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="glass mt-6 rounded-lg w-full max-w-xl mx-auto fade-in p-4 text-center">
@@ -87,7 +142,10 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
           <div className="p-4 border-b border-gray-100 bg-white/40">
             <div className="flex items-center justify-between mb-4">
               <button
-                onClick={() => setSelectedMessageId(null)}
+                onClick={() => {
+                  setSelectedMessageId(null);
+                  setSelectedUrl(null);
+                }}
                 className="flex items-center text-sm text-primary hover:text-primary/80"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
@@ -98,7 +156,10 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
                   onClick={() => {
                     const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
                     const prevMessage = messages[currentIndex + 1];
-                    if (prevMessage) setSelectedMessageId(prevMessage.id);
+                    if (prevMessage) {
+                      setSelectedMessageId(prevMessage.id);
+                      setSelectedUrl(null);
+                    }
                   }}
                   className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
                   disabled={messages.findIndex(m => m.id === selectedMessageId) === messages.length - 1}
@@ -109,7 +170,10 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
                   onClick={() => {
                     const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
                     const nextMessage = messages[currentIndex - 1];
-                    if (nextMessage) setSelectedMessageId(nextMessage.id);
+                    if (nextMessage) {
+                      setSelectedMessageId(nextMessage.id);
+                      setSelectedUrl(null);
+                    }
                   }}
                   className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
                   disabled={messages.findIndex(m => m.id === selectedMessageId) === 0}
@@ -117,7 +181,10 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
                   <ArrowRight className="w-4 h-4 text-primary" />
                 </button>
                 <button
-                  onClick={() => setSelectedMessageId(null)}
+                  onClick={() => {
+                    setSelectedMessageId(null);
+                    setSelectedUrl(null);
+                  }}
                   className="p-1 hover:bg-primary/10 rounded transition-colors"
                 >
                   <X className="w-4 h-4 text-primary" />
@@ -134,10 +201,7 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
             </div>
           </div>
           <ScrollArea className="h-[400px] bg-white">
-            <div 
-              className="p-4 font-mono text-sm whitespace-pre-wrap break-words [&_a]:text-blue-600 [&_a]:underline [&_a]:break-all"
-              dangerouslySetInnerHTML={{ __html: selectedMessage.body }} 
-            />
+            {renderMessageContent(selectedMessage)}
           </ScrollArea>
         </div>
       ) : (
