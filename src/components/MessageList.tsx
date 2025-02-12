@@ -1,3 +1,4 @@
+
 import { Mail, X, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
@@ -72,15 +73,16 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
 
         setTranslating(true);
         try {
-          const response = await fetch('https://api.mymemory.translated.net/get', {
+          // Properly construct URL with query parameters
+          const url = new URL('https://api.mymemory.translated.net/get');
+          url.searchParams.append('q', message.body);
+          url.searchParams.append('langpair', `en|${currentLanguage}`);
+
+          const response = await fetch(url.toString(), {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },
-            params: {
-              q: message.body,
-              langpair: `en|${currentLanguage}`
-            }
           });
           
           const data = await response.json();
