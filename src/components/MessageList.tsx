@@ -1,5 +1,4 @@
-
-import { Mail, X, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
+import { Mail, X, ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
@@ -73,22 +72,15 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
 
         setTranslating(true);
         try {
-          // Properly construct URL with query parameters
-          const url = new URL('https://api.mymemory.translated.net/get');
-          url.searchParams.append('q', message.body);
-          url.searchParams.append('langpair', `en|${currentLanguage}`);
-
-          const response = await fetch(url.toString(), {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
+          const { data, error } = await supabase.functions.invoke('translate', {
+            body: {
+              text: message.body,
+              targetLang: currentLanguage,
             },
           });
-          
-          const data = await response.json();
-          if (data.responseStatus === 200) {
-            setTranslatedContent(data.responseData.translatedText);
-          }
+
+          if (error) throw error;
+          setTranslatedContent(data.translatedText);
         } catch (error) {
           console.error('Translation error:', error);
           setTranslatedContent(null);
