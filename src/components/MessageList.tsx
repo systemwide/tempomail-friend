@@ -1,10 +1,13 @@
-import { Mail, X, ArrowLeft, ArrowRight, Check } from 'lucide-react';
+
+import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
-import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getTranslation } from "@/lib/translations";
 import type { Message } from '@/types/database';
+import MessageHeader from './message/MessageHeader';
+import MessageContent from './message/MessageContent';
+import MessageListItem from './message/MessageListItem';
 
 interface MessageListProps {
   currentAddressId?: string | null;
@@ -118,52 +121,6 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
 
   const selectedMessage = messages.find(m => m.id === selectedMessageId);
 
-  const renderMessageContent = (message: Message) => {
-    if (selectedUrl) {
-      return (
-        <div className="relative h-full">
-          <div className="absolute top-0 left-0 right-0 bg-white/90 p-2 border-b flex items-center justify-between">
-            <span className="text-sm truncate flex-1 mr-4">{selectedUrl}</span>
-            <button
-              onClick={() => setSelectedUrl(null)}
-              className="p-1 hover:bg-primary/10 rounded transition-colors"
-            >
-              <X className="w-4 h-4 text-primary" />
-            </button>
-          </div>
-          <iframe
-            src={selectedUrl}
-            className="w-full h-[calc(100vh-300px)] min-h-[400px] border-0"
-            sandbox="allow-scripts allow-same-origin allow-popups"
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words max-w-full overflow-x-auto">
-        {translating ? (
-          <div className="text-center text-gray-500">
-            {t.translating}
-          </div>
-        ) : translatedContent && currentLanguage !== 'en' ? (
-          <>
-            <div className="mb-4 pb-4 border-b">
-              <div className="text-xs text-gray-500 mb-2">{t.original}:</div>
-              {message.body}
-            </div>
-            <div>
-              <div className="text-xs text-gray-500 mb-2">{t.translated}:</div>
-              {translatedContent}
-            </div>
-          </>
-        ) : (
-          message.body
-        )}
-      </div>
-    );
-  };
-
   if (loading) {
     return (
       <div className="glass mt-6 rounded-lg w-full max-w-xl mx-auto fade-in p-4 text-center">
@@ -180,69 +137,46 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
       
       {selectedMessage ? (
         <div className="fade-in">
-          <div className="p-4 border-b border-gray-100 bg-white/40">
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => {
-                  setSelectedMessageId(null);
-                  setSelectedUrl(null);
-                }}
-                className="flex items-center text-sm text-primary hover:text-primary/80"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                {t.backToInbox}
-              </button>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => {
-                    const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
-                    const prevMessage = messages[currentIndex + 1];
-                    if (prevMessage) {
-                      setSelectedMessageId(prevMessage.id);
-                      setSelectedUrl(null);
-                    }
-                  }}
-                  className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
-                  disabled={messages.findIndex(m => m.id === selectedMessageId) === messages.length - 1}
-                >
-                  <ArrowLeft className="w-4 h-4 text-primary" />
-                </button>
-                <button
-                  onClick={() => {
-                    const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
-                    const nextMessage = messages[currentIndex - 1];
-                    if (nextMessage) {
-                      setSelectedMessageId(nextMessage.id);
-                      setSelectedUrl(null);
-                    }
-                  }}
-                  className="p-1 hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
-                  disabled={messages.findIndex(m => m.id === selectedMessageId) === 0}
-                >
-                  <ArrowRight className="w-4 h-4 text-primary" />
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedMessageId(null);
-                    setSelectedUrl(null);
-                  }}
-                  className="p-1 hover:bg-primary/10 rounded transition-colors"
-                >
-                  <X className="w-4 h-4 text-primary" />
-                </button>
-              </div>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {selectedMessage.subject}
-            </h3>
-            <div className="text-sm text-gray-600 mb-4">
-              From: {selectedMessage.sender}
-              <br />
-              Date: {new Date(selectedMessage.received_at).toLocaleString()}
-            </div>
-          </div>
+          <MessageHeader
+            message={selectedMessage}
+            onBack={() => {
+              setSelectedMessageId(null);
+              setSelectedUrl(null);
+            }}
+            onPrevious={() => {
+              const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
+              const prevMessage = messages[currentIndex + 1];
+              if (prevMessage) {
+                setSelectedMessageId(prevMessage.id);
+                setSelectedUrl(null);
+              }
+            }}
+            onNext={() => {
+              const currentIndex = messages.findIndex(m => m.id === selectedMessageId);
+              const nextMessage = messages[currentIndex - 1];
+              if (nextMessage) {
+                setSelectedMessageId(nextMessage.id);
+                setSelectedUrl(null);
+              }
+            }}
+            hasPrevious={messages.findIndex(m => m.id === selectedMessageId) < messages.length - 1}
+            hasNext={messages.findIndex(m => m.id === selectedMessageId) > 0}
+            onClose={() => {
+              setSelectedMessageId(null);
+              setSelectedUrl(null);
+            }}
+            t={t}
+          />
           <ScrollArea className="h-[calc(100vh-300px)] min-h-[400px] bg-white">
-            {renderMessageContent(selectedMessage)}
+            <MessageContent
+              message={selectedMessage}
+              selectedUrl={selectedUrl}
+              onUrlClose={() => setSelectedUrl(null)}
+              translating={translating}
+              translatedContent={translatedContent}
+              currentLanguage={currentLanguage}
+              t={t}
+            />
           </ScrollArea>
         </div>
       ) : (
@@ -254,30 +188,12 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
               </div>
             ) : (
               messages.map((message) => (
-                <div
+                <MessageListItem
                   key={message.id}
-                  className={cn(
-                    "p-4 hover:bg-white/40 transition-colors duration-200 cursor-pointer",
-                    selectedMessageId === message.id && "bg-white/60"
-                  )}
+                  message={message}
+                  isSelected={selectedMessageId === message.id}
                   onClick={() => handleMessageClick(message.id)}
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Mail className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {message.subject}
-                      </p>
-                      <p className="text-sm text-gray-500 truncate">{message.sender}</p>
-                      <p className="text-sm text-gray-500 mt-1 truncate">{message.body}</p>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {new Date(message.received_at).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
+                />
               ))
             )}
           </div>
