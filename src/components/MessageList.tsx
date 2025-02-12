@@ -1,4 +1,3 @@
-
 import { Mail, X, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
@@ -8,13 +7,16 @@ import type { Message } from '@/types/database';
 
 interface MessageListProps {
   currentAddressId?: string | null;
+  currentLanguage?: string;
 }
 
-const MessageList = ({ currentAddressId }: MessageListProps) => {
+const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListProps) => {
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -63,10 +65,46 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
   }, [currentAddressId]);
 
   useEffect(() => {
+    if (selectedMessageId && currentLanguage !== 'en') {
+      const translateMessage = async () => {
+        const message = messages.find(m => m.id === selectedMessageId);
+        if (!message) return;
+
+        setTranslating(true);
+        try {
+          const response = await fetch('https://api.mymemory.translated.net/get', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {
+              q: message.body,
+              langpair: `en|${currentLanguage}`
+            }
+          });
+          
+          const data = await response.json();
+          if (data.responseStatus === 200) {
+            setTranslatedContent(data.responseData.translatedText);
+          }
+        } catch (error) {
+          console.error('Translation error:', error);
+          setTranslatedContent(null);
+        } finally {
+          setTranslating(false);
+        }
+      };
+
+      translateMessage();
+    } else {
+      setTranslatedContent(null);
+    }
+  }, [selectedMessageId, currentLanguage, messages]);
+
+  useEffect(() => {
     if (selectedMessageId) {
       const message = messages.find(m => m.id === selectedMessageId);
       if (message) {
-        // Try to find the first URL in the message
         const urlMatch = message.body.match(/(https?:\/\/[^\s]+)/);
         if (urlMatch) {
           setSelectedUrl(urlMatch[0]);
@@ -107,7 +145,24 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
 
     return (
       <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words max-w-full overflow-x-auto">
-        {message.body}
+        {translating ? (
+          <div className="text-center text-gray-500">
+            Translating...
+          </div>
+        ) : translatedContent && currentLanguage !== 'en' ? (
+          <>
+            <div className="mb-4 pb-4 border-b">
+              <div className="text-xs text-gray-500 mb-2">Original:</div>
+              {message.body}
+            </div>
+            <div>
+              <div className="text-xs text-gray-500 mb-2">Translated:</div>
+              {translatedContent}
+            </div>
+          </>
+        ) : (
+          message.body
+        )}
       </div>
     );
   };
