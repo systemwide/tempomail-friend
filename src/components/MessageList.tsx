@@ -1,3 +1,4 @@
+
 import { Mail, X, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
@@ -41,7 +42,6 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
 
     fetchMessages();
 
-    // Set up real-time subscription
     const subscription = supabase
       .channel('messages')
       .on('postgres_changes', 
@@ -62,20 +62,26 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
     };
   }, [currentAddressId]);
 
+  useEffect(() => {
+    if (selectedMessageId) {
+      const message = messages.find(m => m.id === selectedMessageId);
+      if (message) {
+        // Try to find the first URL in the message
+        const urlMatch = message.body.match(/(https?:\/\/[^\s]+)/);
+        if (urlMatch) {
+          setSelectedUrl(urlMatch[0]);
+        }
+      }
+    } else {
+      setSelectedUrl(null);
+    }
+  }, [selectedMessageId, messages]);
+
   const handleMessageClick = (messageId: string) => {
     setSelectedMessageId(messageId === selectedMessageId ? null : messageId);
   };
 
   const selectedMessage = messages.find(m => m.id === selectedMessageId);
-
-  const extractUrls = (body: string): string[] => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return body.match(urlRegex) || [];
-  };
-
-  const handleUrlClick = (url: string) => {
-    setSelectedUrl(url);
-  };
 
   const renderMessageContent = (message: Message) => {
     if (selectedUrl) {
@@ -92,33 +98,16 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
           </div>
           <iframe
             src={selectedUrl}
-            className="w-full h-[400px] border-0"
+            className="w-full h-[calc(100vh-300px)] min-h-[400px] border-0"
             sandbox="allow-scripts allow-same-origin allow-popups"
           />
         </div>
       );
     }
 
-    const urls = extractUrls(message.body);
-    const parts = message.body.split(/(https?:\/\/[^\s]+)/g);
-
     return (
-      <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words">
-        {parts.map((part, index) => {
-          if (urls.includes(part)) {
-            return (
-              <button
-                key={index}
-                onClick={() => handleUrlClick(part)}
-                className="text-blue-600 underline hover:text-blue-800 inline-flex items-center gap-1"
-              >
-                {part}
-                <ExternalLink className="w-3 h-3" />
-              </button>
-            );
-          }
-          return <span key={index}>{part}</span>;
-        })}
+      <div className="p-4 font-mono text-sm whitespace-pre-wrap break-words max-w-full overflow-x-auto">
+        {message.body}
       </div>
     );
   };
@@ -200,7 +189,7 @@ const MessageList = ({ currentAddressId }: MessageListProps) => {
               Date: {new Date(selectedMessage.received_at).toLocaleString()}
             </div>
           </div>
-          <ScrollArea className="h-[400px] bg-white">
+          <ScrollArea className="h-[calc(100vh-300px)] min-h-[400px] bg-white">
             {renderMessageContent(selectedMessage)}
           </ScrollArea>
         </div>
