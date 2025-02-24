@@ -48,9 +48,9 @@ const BlogPost = () => {
             <span>{post.readTime}</span>
           </div>
 
-          <ReactMarkdown className="mt-8">
-            {post.content}
-          </ReactMarkdown>
+          <div className="mt-8">
+            <ReactMarkdown>{post.content}</ReactMarkdown>
+          </div>
         </article>
       </div>
     </div>
