@@ -1,5 +1,4 @@
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Navigation from "@/components/Navigation";
 import { getTranslation } from "@/lib/translations";
 import { useState } from "react";
@@ -14,42 +13,32 @@ const FAQ = () => {
       <div className="max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">{t.faq}</h1>
         
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="what-is">
-            <AccordionTrigger>{t.faqWhatIsQuestion}</AccordionTrigger>
-            <AccordionContent>
-              {t.faqWhatIsAnswer}
-            </AccordionContent>
-          </AccordionItem>
+        <div className="space-y-8">
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqWhatIsQuestion}</h2>
+            <p className="text-gray-700">{t.faqWhatIsAnswer}</p>
+          </div>
 
-          <AccordionItem value="why-use">
-            <AccordionTrigger>{t.faqWhyUseQuestion}</AccordionTrigger>
-            <AccordionContent>
-              {t.faqWhyUseAnswer}
-            </AccordionContent>
-          </AccordionItem>
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqWhyUseQuestion}</h2>
+            <p className="text-gray-700">{t.faqWhyUseAnswer}</p>
+          </div>
 
-          <AccordionItem value="how-long">
-            <AccordionTrigger>{t.faqHowLongQuestion}</AccordionTrigger>
-            <AccordionContent>
-              {t.faqHowLongAnswer}
-            </AccordionContent>
-          </AccordionItem>
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqHowLongQuestion}</h2>
+            <p className="text-gray-700">{t.faqHowLongAnswer}</p>
+          </div>
 
-          <AccordionItem value="is-it-safe">
-            <AccordionTrigger>{t.faqSafeQuestion}</AccordionTrigger>
-            <AccordionContent>
-              {t.faqSafeAnswer}
-            </AccordionContent>
-          </AccordionItem>
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqSafeQuestion}</h2>
+            <p className="text-gray-700">{t.faqSafeAnswer}</p>
+          </div>
 
-          <AccordionItem value="how-many">
-            <AccordionTrigger>{t.faqHowManyQuestion}</AccordionTrigger>
-            <AccordionContent>
-              {t.faqHowManyAnswer}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqHowManyQuestion}</h2>
+            <p className="text-gray-700">{t.faqHowManyAnswer}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
