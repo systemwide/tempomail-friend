@@ -53,7 +53,7 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
                     : "text-gray-600 hover:text-primary hover:bg-primary/5"
                 )}
               >
-                {link.href.charAt(1).toUpperCase() + link.href.slice(2)}
+                {link.href === "/" ? "Home" : link.href.charAt(1).toUpperCase() + link.href.slice(2)}
               </Link>
             ))}
             
@@ -76,14 +76,6 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
               </DropdownMenu>
             )}
           </div>
-        </div>
-        
-        <div className="flex justify-center space-x-4 text-xs text-gray-500 pb-2">
-          <Link to="/privacy" className="hover:text-primary">Privacy Policy</Link>
-          <span>•</span>
-          <Link to="/terms" className="hover:text-primary">Terms of Service</Link>
-          <span>•</span>
-          <Link to="/contact" className="hover:text-primary">Contact</Link>
         </div>
       </div>
     </nav>
