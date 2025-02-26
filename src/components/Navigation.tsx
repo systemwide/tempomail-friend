@@ -56,6 +56,15 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
                 {link.label}
               </Link>
             ))}
+
+            <div className="h-4 w-px bg-gray-200" />
+            
+            <Link
+              to="/contact"
+              className="text-sm text-gray-600 hover:text-primary hover:bg-primary/5 px-3 py-2 rounded-md transition-colors"
+            >
+              Contact
+            </Link>
             
             {onLanguageChange && (
               <DropdownMenu>
@@ -76,6 +85,12 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
               </DropdownMenu>
             )}
           </div>
+        </div>
+        
+        <div className="flex justify-center space-x-4 text-xs text-gray-500 pb-2">
+          <Link to="/privacy" className="hover:text-primary">Privacy Policy</Link>
+          <span>•</span>
+          <Link to="/terms" className="hover:text-primary">Terms of Service</Link>
         </div>
       </div>
     </nav>
