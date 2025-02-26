@@ -53,18 +53,9 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
                     : "text-gray-600 hover:text-primary hover:bg-primary/5"
                 )}
               >
-                {link.label}
+                {link.href.charAt(1).toUpperCase() + link.href.slice(2)}
               </Link>
             ))}
-
-            <div className="h-4 w-px bg-gray-200" />
-            
-            <Link
-              to="/contact"
-              className="text-sm text-gray-600 hover:text-primary hover:bg-primary/5 px-3 py-2 rounded-md transition-colors"
-            >
-              Contact
-            </Link>
             
             {onLanguageChange && (
               <DropdownMenu>
@@ -91,6 +82,8 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
           <Link to="/privacy" className="hover:text-primary">Privacy Policy</Link>
           <span>•</span>
           <Link to="/terms" className="hover:text-primary">Terms of Service</Link>
+          <span>•</span>
+          <Link to="/contact" className="hover:text-primary">Contact</Link>
         </div>
       </div>
     </nav>
