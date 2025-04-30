@@ -6,3 +6,11 @@ Sitemap: https://tenminuteemails.com/sitemap.xml
 
 # Prevent caching of temporary email addresses
 Disallow: /email/*
+
+# Allow important static pages
+Allow: /features
+Allow: /faq
+Allow: /blog
+Allow: /privacy
+Allow: /terms
+Allow: /contact
