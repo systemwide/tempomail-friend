@@ -1,6 +1,7 @@
-
-# Redirect www to non-www
+# Force HTTPS and non-www
+http://www.tenminuteemails.com/* https://tenminuteemails.com/:splat 301!
 https://www.tenminuteemails.com/* https://tenminuteemails.com/:splat 301!
+http://tenminuteemails.com/* https://tenminuteemails.com/:splat 301!
 
 # Handle client-side routing
 /* /index.html 200

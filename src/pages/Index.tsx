@@ -16,9 +16,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 select-text flex flex-col">
       <Navigation currentLanguage={currentLanguage} onLanguageChange={setCurrentLanguage} />
-      <AdBanner className="w-full py-4" />
+      
+      {/* Top banner ad - high visibility, 728x90 leaderboard */}
+      <AdBanner format="banner" className="w-full py-2" refreshInterval={30} />
+      
       <div className="flex px-4 flex-1">
-        <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
+        {/* Left sidebar ad - 160x600 skyscraper */}
+        <AdBanner format="sidebar" className="hidden lg:flex w-48 min-h-screen sticky top-16" refreshInterval={30} />
+        
         <main className="flex-1 max-w-4xl mx-auto py-12">
           <header className="text-center mb-12 slide-up">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -34,6 +39,9 @@ const Index = () => {
             <EmailBox onAddressChange={setCurrentAddressId} />
           </section>
 
+          {/* Rectangle ad below email box - prime real estate (300x250) */}
+          <AdBanner format="rectangle" className="mt-4" refreshInterval={30} />
+
           <section aria-label="Messages" className="mt-8">
             <h3 className="sr-only">Email Messages</h3>
             <MessageList 
@@ -42,9 +50,12 @@ const Index = () => {
             />
           </section>
           
-          <AdBanner className="mt-6" />
+          {/* Native ad at bottom of content */}
+          <AdBanner format="native" className="mt-6 w-full" refreshInterval={60} />
         </main>
-        <AdBanner className="hidden lg:block w-48 min-h-screen sticky top-0" />
+        
+        {/* Right sidebar ad - 160x600 skyscraper */}
+        <AdBanner format="sidebar" className="hidden lg:flex w-48 min-h-screen sticky top-16" refreshInterval={30} />
       </div>
       <Footer />
     </div>
