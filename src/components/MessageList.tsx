@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { getTranslation } from "@/lib/translations";
-import type { Message } from '@/types/database';
+import type { Message, Attachment } from '@/types/database';
 import MessageHeader from './message/MessageHeader';
 import MessageContent from './message/MessageContent';
 import MessageListItem from './message/MessageListItem';
@@ -21,6 +21,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const t = getTranslation(currentLanguage);
 
@@ -98,8 +99,22 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
           setSelectedUrl(urlMatch[0]);
         }
       }
+      // Fetch attachments for selected message
+      const fetchAttachments = async () => {
+        const { data, error } = await supabase
+          .from('attachments')
+          .select('*')
+          .eq('message_id', selectedMessageId);
+        if (!error && data) {
+          setAttachments(data);
+        } else {
+          setAttachments([]);
+        }
+      };
+      fetchAttachments();
     } else {
       setSelectedUrl(null);
+      setAttachments([]);
     }
   }, [selectedMessageId, messages]);
 
@@ -163,6 +178,7 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
               translating={translating}
               translatedContent={translatedContent}
               currentLanguage={currentLanguage}
+              attachments={attachments}
               t={t}
             />
           </ScrollArea>

@@ -14,3 +14,13 @@ export interface Message {
   body: string;
   received_at: string;
 }
+
+export interface Attachment {
+  id: string;
+  message_id: string;
+  filename: string;
+  content_type: string | null;
+  size: number | null;
+  storage_path: string;
+  created_at: string;
+}

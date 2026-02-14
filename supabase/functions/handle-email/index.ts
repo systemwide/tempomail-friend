@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
     let sender: string | undefined;
     let subject: string | undefined;
     let bodyPlain: string | undefined;
+    const attachmentFiles: { file: File; filename: string }[] = [];
 
     if (contentType.includes("application/json")) {
       const jsonData = await req.json();
@@ -54,6 +55,30 @@ Deno.serve(async (req) => {
       subject = (formData.get("subject") as string | null)?.trim();
       bodyPlain = (formData.get("body-plain") as string | null)?.trim()
         ?? (formData.get("bodyPlain") as string | null)?.trim();
+
+      // Extract attachments - Mailgun sends them as attachment-1, attachment-2, etc.
+      // Also check for "attachment" (single) and numbered variants
+      for (const [key, value] of formData.entries()) {
+        if (
+          (key.startsWith("attachment") || key === "file") &&
+          value instanceof File
+        ) {
+          attachmentFiles.push({ file: value, filename: value.name || key });
+        }
+      }
+
+      // Also check attachment-count and iterate
+      const attachmentCount = parseInt(formData.get("attachment-count") as string || "0", 10);
+      if (attachmentCount > 0) {
+        for (let i = 1; i <= attachmentCount; i++) {
+          const file = formData.get(`attachment-${i}`);
+          if (file instanceof File && !attachmentFiles.some(a => a.filename === file.name)) {
+            attachmentFiles.push({ file, filename: file.name || `attachment-${i}` });
+          }
+        }
+      }
+
+      console.log(`Found ${attachmentFiles.length} attachment(s)`);
     } else {
       return json({ error: "Unsupported content type" }, 415);
     }
@@ -82,20 +107,67 @@ Deno.serve(async (req) => {
       return json({ error: "Address not found" }, 404);
     }
 
-    const { error: insertError } = await supabase.from("messages").insert({
-      address_id: address.id,
-      sender,
-      subject,
-      body: bodyPlain,
-      received_at: new Date().toISOString(),
-    });
+    // Insert the message
+    const { data: messageData, error: insertError } = await supabase
+      .from("messages")
+      .insert({
+        address_id: address.id,
+        sender,
+        subject,
+        body: bodyPlain,
+        received_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
 
-    if (insertError) {
+    if (insertError || !messageData) {
       console.error("Error storing message:", insertError);
-      return json({ error: "Insert failed", details: insertError.message }, 500);
+      return json({ error: "Insert failed", details: insertError?.message }, 500);
     }
 
-    return json({ success: true }, 200);
+    // Upload attachments to storage and save metadata
+    const attachmentResults = [];
+    for (const { file, filename } of attachmentFiles) {
+      try {
+        const storagePath = `${messageData.id}/${filename}`;
+        const arrayBuffer = await file.arrayBuffer();
+
+        const { error: uploadError } = await supabase.storage
+          .from("email-attachments")
+          .upload(storagePath, arrayBuffer, {
+            contentType: file.type || "application/octet-stream",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error(`Error uploading attachment ${filename}:`, uploadError);
+          continue;
+        }
+
+        const { error: attachInsertError } = await supabase
+          .from("attachments")
+          .insert({
+            message_id: messageData.id,
+            filename,
+            content_type: file.type || "application/octet-stream",
+            size: file.size,
+            storage_path: storagePath,
+          });
+
+        if (attachInsertError) {
+          console.error(`Error saving attachment metadata for ${filename}:`, attachInsertError);
+          continue;
+        }
+
+        attachmentResults.push({ filename, size: file.size });
+      } catch (err) {
+        console.error(`Error processing attachment ${filename}:`, err);
+      }
+    }
+
+    console.log(`Message stored with ${attachmentResults.length} attachment(s)`);
+
+    return json({ success: true, attachments: attachmentResults.length }, 200);
   } catch (err: any) {
     console.error("Unhandled error:", err);
     return json({ error: "Internal error", details: String(err?.message ?? err) }, 500);
