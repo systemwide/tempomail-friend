@@ -33,7 +33,7 @@ const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
         },
       ])
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error creating email address:', error);
@@ -41,6 +41,11 @@ const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
         title: "Error",
         description: "Failed to generate email address. Please try again.",
       });
+      return;
+    }
+
+    if (!data) {
+      console.error('No data returned when creating email address');
       return;
     }
 
