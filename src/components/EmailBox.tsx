@@ -7,12 +7,13 @@ import type { Address } from '@/types/database';
 
 interface EmailBoxProps {
   onAddressChange?: (addressId: string | null) => void;
+  existingAddressId?: string | null;
 }
 
-const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
+const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
   const [email, setEmail] = useState('');
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
-  const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState(600);
+  const [currentAddressId, setCurrentAddressId] = useState<string | null>(existingAddressId ?? null);
   const { toast } = useToast();
 
   const generateEmail = async () => {
@@ -92,7 +93,27 @@ const EmailBox = ({ onAddressChange }: EmailBoxProps) => {
   };
 
   useEffect(() => {
-    generateEmail();
+    const restoreOrGenerate = async () => {
+      if (existingAddressId) {
+        // Restore existing address
+        const { data } = await supabase
+          .from('addresses')
+          .select('*')
+          .eq('id', existingAddressId)
+          .maybeSingle();
+        if (data) {
+          setEmail(data.email);
+          setCurrentAddressId(data.id);
+          const expiresAt = new Date(data.expires_at).getTime();
+          const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+          setTimeLeft(remaining > 0 ? remaining : 600);
+          if (remaining <= 0) generateEmail();
+          return;
+        }
+      }
+      generateEmail();
+    };
+    restoreOrGenerate();
   }, []);
 
   useEffect(() => {
