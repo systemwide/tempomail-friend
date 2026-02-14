@@ -3,18 +3,21 @@ import EmailBox from "@/components/EmailBox";
 import MessageList from "@/components/MessageList";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { useState } from "react";
 import { getTranslation } from "@/lib/translations";
 
-const Index = () => {
-  const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
-  const [currentLanguage, setCurrentLanguage] = useState("en");
+interface IndexProps {
+  currentAddressId: string | null;
+  onAddressChange: (id: string | null) => void;
+  currentLanguage: string;
+  onLanguageChange: (lang: string) => void;
+}
 
+const Index = ({ currentAddressId, onAddressChange, currentLanguage, onLanguageChange }: IndexProps) => {
   const t = getTranslation(currentLanguage);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 select-text flex flex-col">
-      <Navigation currentLanguage={currentLanguage} onLanguageChange={setCurrentLanguage} />
+      <Navigation currentLanguage={currentLanguage} onLanguageChange={onLanguageChange} />
       
       <main className="flex-1 max-w-4xl mx-auto py-12 px-4">
         <header className="text-center mb-12 slide-up">
@@ -28,7 +31,7 @@ const Index = () => {
 
         <section aria-label="Email Generator">
           <h3 className="sr-only">Generate Temporary Email</h3>
-          <EmailBox onAddressChange={setCurrentAddressId} />
+          <EmailBox onAddressChange={onAddressChange} existingAddressId={currentAddressId} />
         </section>
 
         <section aria-label="Messages" className="mt-8">
