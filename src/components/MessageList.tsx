@@ -50,23 +50,11 @@ const MessageList = ({ currentAddressId, currentLanguage = 'en' }: MessageListPr
 
     fetchMessages();
 
-    const subscription = supabase
-      .channel('messages')
-      .on('postgres_changes', 
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'messages',
-          filter: `address_id=eq.${currentAddressId}`
-        },
-        (payload) => {
-          setMessages(prev => [payload.new as Message, ...prev]);
-        }
-      )
-      .subscribe();
+    // Poll every 15 seconds instead of using Realtime WebSockets
+    const interval = setInterval(fetchMessages, 15000);
 
     return () => {
-      subscription.unsubscribe();
+      clearInterval(interval);
     };
   }, [currentAddressId]);
 
