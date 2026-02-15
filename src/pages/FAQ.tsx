@@ -1,5 +1,6 @@
 
 import Navigation from "@/components/Navigation";
+import AdUnit from "@/components/AdUnit";
 import { getTranslation } from "@/lib/translations";
 import { useState } from "react";
 
@@ -22,6 +23,10 @@ const FAQ = () => {
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqWhyUseQuestion}</h2>
             <p className="text-gray-700">{t.faqWhyUseAnswer}</p>
+          </div>
+
+          <div>
+            <AdUnit slot="YOUR_AD_SLOT_4" />
           </div>
 
           <div className="bg-white rounded-lg p-6 shadow-sm">

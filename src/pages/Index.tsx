@@ -1,8 +1,8 @@
-
 import EmailBox from "@/components/EmailBox";
 import MessageList from "@/components/MessageList";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import AdUnit from "@/components/AdUnit";
 import { getTranslation } from "@/lib/translations";
 
 interface IndexProps {
@@ -34,13 +34,21 @@ const Index = ({ currentAddressId, onAddressChange, currentLanguage, onLanguageC
           <EmailBox onAddressChange={onAddressChange} existingAddressId={currentAddressId} />
         </section>
 
+        <div className="mt-8">
+          <AdUnit slot="YOUR_AD_SLOT_1" />
+        </div>
+
         <section aria-label="Messages" className="mt-8">
           <h3 className="sr-only">Email Messages</h3>
-          <MessageList 
+          <MessageList
             currentAddressId={currentAddressId}
             currentLanguage={currentLanguage}
           />
         </section>
+
+        <div className="mt-8">
+          <AdUnit slot="YOUR_AD_SLOT_2" />
+        </div>
       </main>
       <Footer />
     </div>

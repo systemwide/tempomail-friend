@@ -100,11 +100,11 @@ Deno.serve(async (req) => {
 
     if (addressError) {
       console.error("Address lookup error:", addressError);
-      return json({ error: "Address lookup failed", details: addressError.message }, 404);
+      return json({ error: "Address lookup failed", details: addressError.message }, 406);
     }
 
     if (!address) {
-      return json({ error: "Address not found" }, 404);
+      return json({ error: "Address not found" }, 406);
     }
 
     // Insert the message

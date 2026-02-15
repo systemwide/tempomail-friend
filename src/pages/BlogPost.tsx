@@ -1,6 +1,7 @@
 
 import { useParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import AdUnit from "@/components/AdUnit";
 import { blogPosts } from "@/lib/blogPosts";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -52,6 +53,10 @@ const BlogPost = () => {
             <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
         </article>
+
+        <div className="mt-8">
+          <AdUnit slot="YOUR_AD_SLOT_3" />
+        </div>
       </div>
     </div>
   );

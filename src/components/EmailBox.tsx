@@ -1,40 +1,35 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Copy, RefreshCw, Timer } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
-import type { Address } from '@/types/database';
+import Turnstile from '@/components/Turnstile';
 
 interface EmailBoxProps {
   onAddressChange?: (addressId: string | null) => void;
   existingAddressId?: string | null;
 }
 
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+
 const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
   const [email, setEmail] = useState('');
   const [timeLeft, setTimeLeft] = useState(600);
   const [currentAddressId, setCurrentAddressId] = useState<string | null>(existingAddressId ?? null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [awaitingVerification, setAwaitingVerification] = useState(false);
   const { toast } = useToast();
 
-  const generateEmail = async () => {
-    const randomString = Math.random().toString(36).substring(2, 8);
-    const newEmail = `${randomString}@tenminuteemails.com`;
-    
-    // Calculate expiration time (10 minutes from now) in UTC
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+  const generateEmail = useCallback(async (token?: string) => {
+    const effectiveToken = token ?? turnstileToken;
 
-    // Insert new address into Supabase
-    const { data, error } = await supabase
-      .from('addresses')
-      .insert([
-        {
-          email: newEmail,
-          expires_at: expiresAt.toISOString(),
-        },
-      ])
-      .select()
-      .maybeSingle();
+    if (TURNSTILE_SITE_KEY && !effectiveToken) {
+      setAwaitingVerification(true);
+      return;
+    }
+
+    const { data, error } = await supabase.functions.invoke('create-address', {
+      body: { turnstileToken: effectiveToken ?? undefined },
+    });
 
     if (error) {
       console.error('Error creating email address:', error);
@@ -50,11 +45,17 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
       return;
     }
 
-    setEmail(newEmail);
+    setEmail(data.email);
     setCurrentAddressId(data.id);
     onAddressChange?.(data.id);
-    setTimeLeft(600); // Reset timer when generating new email
-  };
+    setTimeLeft(600);
+    setAwaitingVerification(false);
+  }, [turnstileToken, onAddressChange, toast]);
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+    generateEmail(token);
+  }, [generateEmail]);
 
   const copyEmail = async () => {
     await navigator.clipboard.writeText(email);
@@ -67,7 +68,6 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
   const resetTimer = async () => {
     if (!currentAddressId) return;
 
-    // Calculate new expiration time in UTC
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 
@@ -95,7 +95,6 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
   useEffect(() => {
     const restoreOrGenerate = async () => {
       if (existingAddressId) {
-        // Restore existing address
         const { data } = await supabase
           .from('addresses')
           .select('*')
@@ -120,7 +119,7 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 0) {
-          generateEmail(); // Generate new email when timer expires
+          generateEmail();
           return 600;
         }
         return prevTime - 1;
@@ -136,6 +135,29 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  if (awaitingVerification && TURNSTILE_SITE_KEY) {
+    return (
+      <div className="glass p-6 rounded-lg w-full max-w-xl mx-auto slide-up">
+        <div className="flex flex-col items-center space-y-4">
+          <p className="text-gray-700 text-center">
+            Please complete the verification to generate your email address.
+          </p>
+          <Turnstile
+            siteKey={TURNSTILE_SITE_KEY}
+            onVerify={handleTurnstileVerify}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => {
+              toast({
+                title: "Verification Error",
+                description: "CAPTCHA verification failed. Please try again.",
+              });
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="glass p-6 rounded-lg w-full max-w-xl mx-auto slide-up">
       <div className="flex flex-col space-y-4">
@@ -150,7 +172,7 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
               <Copy className="w-5 h-5 text-primary" />
             </button>
             <button
-              onClick={generateEmail}
+              onClick={() => generateEmail()}
               className="p-2 hover:bg-primary/10 rounded-lg transition-colors duration-200"
               aria-label="Generate new email"
             >
@@ -158,7 +180,7 @@ const EmailBox = ({ onAddressChange, existingAddressId }: EmailBoxProps) => {
             </button>
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between bg-white/40 rounded-lg p-4 border border-gray-100">
           <div className="flex items-center space-x-2">
             <Timer className="w-5 h-5 text-primary" />
