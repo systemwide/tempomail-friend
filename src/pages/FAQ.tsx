@@ -43,6 +43,30 @@ const FAQ = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqHowManyQuestion}</h2>
             <p className="text-gray-700">{t.faqHowManyAnswer}</p>
           </div>
+
+          <div>
+            <AdUnit slot="YOUR_AD_SLOT_5" />
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqFreeQuestion}</h2>
+            <p className="text-gray-700">{t.faqFreeAnswer}</p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqSendQuestion}</h2>
+            <p className="text-gray-700">{t.faqSendAnswer}</p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqStoreDataQuestion}</h2>
+            <p className="text-gray-700">{t.faqStoreDataAnswer}</p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t.faqLegalQuestion}</h2>
+            <p className="text-gray-700">{t.faqLegalAnswer}</p>
+          </div>
         </div>
       </div>
     </div>

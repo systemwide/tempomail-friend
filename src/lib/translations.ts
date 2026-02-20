@@ -33,6 +33,14 @@ interface Translations {
     faqSafeAnswer: string;
     faqHowManyQuestion: string;
     faqHowManyAnswer: string;
+    faqFreeQuestion: string;
+    faqFreeAnswer: string;
+    faqSendQuestion: string;
+    faqSendAnswer: string;
+    faqStoreDataQuestion: string;
+    faqStoreDataAnswer: string;
+    faqLegalQuestion: string;
+    faqLegalAnswer: string;
   };
 }
 
@@ -71,6 +79,14 @@ export const translations: Translations = {
     faqSafeAnswer: "Yes, our service is designed with security and privacy as top priorities. Each temporary email address is private and unique to you, and only you can access the messages sent to it. While email as a technology isn't inherently encrypted during transmission, we ensure that your temporary inbox remains private and inaccessible to others. However, we recommend not using temporary emails for important accounts that may require password resets in the future.",
     faqHowManyQuestion: "Is there a limit to how many email addresses I can create?",
     faqHowManyAnswer: "You can create as many temporary email addresses as you need. There's no registration required and no limit on the number of addresses you can generate. Each new address will follow the same 24-hour expiration policy to maintain security and privacy.",
+    faqFreeQuestion: "Is this service completely free?",
+    faqFreeAnswer: "Yes, Ten Minute Emails is completely free to use. There are no premium tiers, no hidden fees, and no credit card required. We believe privacy tools should be accessible to everyone. The service is supported by minimal, non-intrusive advertising.",
+    faqSendQuestion: "Can I send emails from my temporary address?",
+    faqSendAnswer: "No, our temporary email addresses are receive-only. This is by design — allowing outgoing email from disposable addresses could enable spam and abuse, which would undermine the very privacy protections we're trying to provide. If you need to send a reply, we recommend using your regular email client.",
+    faqStoreDataQuestion: "Do you store any of my personal data?",
+    faqStoreDataAnswer: "No. We do not require any personal information to use our service — no registration, no name, no phone number. The temporary email addresses and any received messages are automatically and permanently deleted after 24 hours. We do not keep logs of email content or metadata beyond the active session. For full details, please see our Privacy Policy.",
+    faqLegalQuestion: "Is using a temporary email address legal?",
+    faqLegalAnswer: "Yes, using a temporary email address is completely legal. Disposable email services are a legitimate privacy tool, similar to using a P.O. box for physical mail. They are widely used by security researchers, journalists, and everyday users who want to protect their primary email address from spam and data collection. However, users should always comply with the terms of service of any website they register on.",
   },
   es: {
     title: "Servicio de Correo Temporal",
@@ -106,6 +122,14 @@ export const translations: Translations = {
     faqSafeAnswer: "Sí, nuestro servicio está diseñado pensando en la seguridad. No almacenamos ninguna información personal y todos los correos se eliminan automáticamente después de su vencimiento. Sin embargo, evita usar correos temporales para cuentas importantes o comunicaciones sensibles.",
     faqHowManyQuestion: "¿Cuántas direcciones de correo puedo crear?",
     faqHowManyAnswer: "Puedes crear direcciones de correo temporal ilimitadas. No hay restricción en el número de direcciones que puedes generar y no se requiere registro.",
+    faqFreeQuestion: "¿Este servicio es completamente gratuito?",
+    faqFreeAnswer: "Sí, Ten Minute Emails es completamente gratuito. No hay planes premium, ni tarifas ocultas, ni se requiere tarjeta de crédito. Creemos que las herramientas de privacidad deben ser accesibles para todos. El servicio se mantiene gracias a publicidad mínima y no intrusiva.",
+    faqSendQuestion: "¿Puedo enviar correos desde mi dirección temporal?",
+    faqSendAnswer: "No, nuestras direcciones de correo temporal son solo de recepción. Esto es intencional: permitir el envío de correos desde direcciones desechables podría facilitar el spam y el abuso, lo que socavaría las protecciones de privacidad que buscamos ofrecer. Si necesitas enviar una respuesta, te recomendamos usar tu cliente de correo habitual.",
+    faqStoreDataQuestion: "¿Almacenan alguno de mis datos personales?",
+    faqStoreDataAnswer: "No. No requerimos ninguna información personal para usar nuestro servicio: sin registro, sin nombre, sin número de teléfono. Las direcciones de correo temporales y los mensajes recibidos se eliminan automática y permanentemente después de 24 horas. No conservamos registros del contenido ni de los metadatos de los correos más allá de la sesión activa. Para más detalles, consulta nuestra Política de Privacidad.",
+    faqLegalQuestion: "¿Es legal usar una dirección de correo temporal?",
+    faqLegalAnswer: "Sí, usar una dirección de correo temporal es completamente legal. Los servicios de correo desechable son una herramienta legítima de privacidad, similar a usar un apartado postal para el correo físico. Son ampliamente utilizados por investigadores de seguridad, periodistas y usuarios comunes que desean proteger su dirección de correo principal del spam y la recopilación de datos. No obstante, los usuarios deben cumplir siempre con los términos de servicio de cualquier sitio web en el que se registren.",
   },
   fr: {
     title: "Service de Messagerie Temporaire",
@@ -141,6 +165,14 @@ export const translations: Translations = {
     faqSafeAnswer: "Oui, notre service est conçu avec la sécurité en tête. Nous ne stockons aucune information personnelle, et tous les courriels sont automatiquement supprimés après leur expiration. Cependant, évitez d'utiliser des adresses de courriel temporaires pour des comptes importants ou des communications sensibles.",
     faqHowManyQuestion: "Combien d'adresses de courriel pouvez-vous créer?",
     faqHowManyAnswer: "Vous pouvez créer autant d'adresses de courriel temporaires que vous le souhaitez. Il n'y a aucune limite sur le nombre d'adresses que vous pouvez générer, et aucune inscription n'est nécessaire.",
+    faqFreeQuestion: "Ce service est-il entièrement gratuit ?",
+    faqFreeAnswer: "Oui, Ten Minute Emails est entièrement gratuit. Il n'y a pas de formule premium, pas de frais cachés et aucune carte bancaire n'est requise. Nous pensons que les outils de protection de la vie privée doivent être accessibles à tous. Le service est financé par une publicité discrète et non intrusive.",
+    faqSendQuestion: "Puis-je envoyer des e-mails depuis mon adresse temporaire ?",
+    faqSendAnswer: "Non, nos adresses temporaires fonctionnent uniquement en réception. C'est un choix délibéré : permettre l'envoi d'e-mails depuis des adresses jetables pourrait favoriser le spam et les abus, ce qui irait à l'encontre des protections de confidentialité que nous cherchons à offrir. Si vous devez envoyer une réponse, nous vous recommandons d'utiliser votre client de messagerie habituel.",
+    faqStoreDataQuestion: "Conservez-vous mes données personnelles ?",
+    faqStoreDataAnswer: "Non. Nous ne demandons aucune information personnelle pour utiliser notre service — ni inscription, ni nom, ni numéro de téléphone. Les adresses e-mail temporaires et les messages reçus sont automatiquement et définitivement supprimés au bout de 24 heures. Nous ne conservons aucun journal du contenu des e-mails ni de leurs métadonnées au-delà de la session active. Pour plus de détails, veuillez consulter notre Politique de confidentialité.",
+    faqLegalQuestion: "L'utilisation d'une adresse e-mail temporaire est-elle légale ?",
+    faqLegalAnswer: "Oui, l'utilisation d'une adresse e-mail temporaire est tout à fait légale. Les services de messagerie jetable sont un outil de confidentialité légitime, comparable à l'utilisation d'une boîte postale pour le courrier physique. Ils sont largement utilisés par les chercheurs en sécurité, les journalistes et les utilisateurs souhaitant protéger leur adresse e-mail principale contre le spam et la collecte de données. Cependant, les utilisateurs doivent toujours respecter les conditions d'utilisation de tout site web sur lequel ils s'inscrivent.",
   },
   de: {
     title: "Temporärer E-Mail-Dienst",
@@ -176,6 +208,14 @@ export const translations: Translations = {
     faqSafeAnswer: "Ja, unser Dienst ist mit Sicherheit konzipiert. Wir speichern keine persönlichen Informationen und alle E-Mails werden automatisch gelöscht, sobald sie abgelaufen sind. Es ist jedoch ratsam, temporäre E-Mail-Adressen nicht für wichtige Konten oder sensiblen Kommunikationen zu verwenden.",
     faqHowManyQuestion: "Wie viele E-Mail-Adressen kann ich erstellen?",
     faqHowManyAnswer: "Sie können unendlich viele temporäre E-Mail-Adressen erstellen. Es gibt keine Beschränkung auf die Anzahl der Adressen, die Sie generieren können, und keine Registrierung ist erforderlich.",
+    faqFreeQuestion: "Ist dieser Dienst vollkommen kostenlos?",
+    faqFreeAnswer: "Ja, Ten Minute Emails ist vollständig kostenlos. Es gibt keine Premium-Stufen, keine versteckten Gebühren und keine Kreditkarte erforderlich. Wir sind der Überzeugung, dass Datenschutz-Tools für alle zugänglich sein sollten. Der Dienst wird durch dezente, nicht aufdringliche Werbung finanziert.",
+    faqSendQuestion: "Kann ich E-Mails von meiner temporären Adresse senden?",
+    faqSendAnswer: "Nein, unsere temporären E-Mail-Adressen sind ausschließlich für den Empfang vorgesehen. Das ist beabsichtigt: Wenn man von Wegwerfadressen E-Mails senden könnte, würde dies Spam und Missbrauch erleichtern und genau den Datenschutz untergraben, den wir bieten möchten. Wenn Sie eine Antwort senden müssen, empfehlen wir die Nutzung Ihres regulären E-Mail-Programms.",
+    faqStoreDataQuestion: "Speichern Sie meine persönlichen Daten?",
+    faqStoreDataAnswer: "Nein. Wir benötigen keinerlei persönliche Angaben zur Nutzung unseres Dienstes — keine Registrierung, keinen Namen, keine Telefonnummer. Die temporären E-Mail-Adressen und alle empfangenen Nachrichten werden nach 24 Stunden automatisch und unwiderruflich gelöscht. Wir speichern keine Protokolle über E-Mail-Inhalte oder Metadaten über die aktive Sitzung hinaus. Weitere Einzelheiten finden Sie in unserer Datenschutzrichtlinie.",
+    faqLegalQuestion: "Ist die Verwendung einer temporären E-Mail-Adresse legal?",
+    faqLegalAnswer: "Ja, die Verwendung einer temporären E-Mail-Adresse ist vollkommen legal. Wegwerf-E-Mail-Dienste sind ein legitimes Datenschutz-Werkzeug, vergleichbar mit einem Postfach für herkömmliche Post. Sie werden häufig von Sicherheitsforschern, Journalisten und ganz normalen Nutzern verwendet, die ihre Haupt-E-Mail-Adresse vor Spam und Datensammlung schützen möchten. Nutzer sollten jedoch stets die Nutzungsbedingungen der Websites einhalten, auf denen sie sich registrieren.",
   },
   zh: {
     title: "临时邮件服务",
@@ -211,6 +251,14 @@ export const translations: Translations = {
     faqSafeAnswer: "是的，我们的服务设计考虑了安全。我们不存储任何个人信息，所有邮件在过期后都会自动删除。不过，避免在重要账户或敏感通信中使用临时邮箱地址。",
     faqHowManyQuestion: "我可以创建多少个临时邮箱地址?",
     faqHowManyAnswer: "您可以创建无限数量的临时邮箱地址。没有数量限制，无需注册即可生成。",
+    faqFreeQuestion: "这项服务完全免费吗？",
+    faqFreeAnswer: "是的，Ten Minute Emails 完全免费使用。没有付费套餐，没有隐藏费用，也不需要绑定信用卡。我们认为隐私保护工具应该人人都能使用。本服务通过少量、非侵入性的广告来维持运营。",
+    faqSendQuestion: "我可以从临时邮箱地址发送邮件吗？",
+    faqSendAnswer: "不可以，我们的临时邮箱地址仅支持接收邮件。这是经过慎重考虑的设计——如果允许从一次性地址发送邮件，可能会被用于发送垃圾邮件和进行滥用行为，这恰恰会破坏我们致力于提供的隐私保护。如果您需要回复邮件，建议使用您的常规邮箱客户端。",
+    faqStoreDataQuestion: "你们会存储我的个人数据吗？",
+    faqStoreDataAnswer: "不会。使用我们的服务无需提供任何个人信息——不需要注册，不需要姓名，也不需要手机号码。临时邮箱地址及所有接收到的邮件会在 24 小时后自动永久删除。我们不会在活跃会话之外保留任何邮件内容或元数据的日志。详情请参阅我们的隐私政策。",
+    faqLegalQuestion: "使用临时邮箱地址合法吗？",
+    faqLegalAnswer: "是的，使用临时邮箱地址完全合法。一次性邮箱服务是一种正当的隐私保护工具，类似于使用邮政信箱接收实体信件。安全研究人员、记者以及希望保护主邮箱免受垃圾邮件和数据收集的普通用户都在广泛使用这类服务。不过，用户在任何网站注册时都应遵守该网站的使用条款。",
   },
   ja: {
     title: "一時的なメールサービス",
@@ -246,6 +294,14 @@ export const translations: Translations = {
     faqSafeAnswer: "はい、私たちのサービスはセキュリティに焦点を当てています。個人情報は保存されません。また、メールアドレスは期限が過ぎると自動的に削除されます。ただし、重要なアカウントや重要なコミュニケーションに一時メールアドレスを使用しないことをお勧めします。",
     faqHowManyQuestion: "何個の一時メールアドレスを作成できますか?",
     faqHowManyAnswer: "無制限の一時メールアドレスを作成できます。生成するアドレスの数に制限はありません。登録不要で生成できます。",
+    faqFreeQuestion: "このサービスは完全に無料ですか？",
+    faqFreeAnswer: "はい、Ten Minute Emailsは完全無料でご利用いただけます。有料プラン、隠れた料金、クレジットカードの登録は一切不要です。プライバシー保護ツールは誰もが利用できるべきだと考えています。本サービスは控えめで邪魔にならない広告によって運営されています。",
+    faqSendQuestion: "一時メールアドレスからメールを送信できますか？",
+    faqSendAnswer: "いいえ、当サービスの一時メールアドレスは受信専用です。これは意図的な設計です。使い捨てアドレスからの送信を許可すると、スパムや悪用を助長し、私たちが提供しようとしているプライバシー保護そのものを損なう恐れがあります。返信が必要な場合は、通常のメールクライアントをご利用ください。",
+    faqStoreDataQuestion: "個人データは保存されますか？",
+    faqStoreDataAnswer: "いいえ。当サービスの利用に個人情報は一切不要です。登録も氏名も電話番号も必要ありません。一時メールアドレスと受信したメッセージは、24時間後に自動的かつ完全に削除されます。アクティブなセッション以外で、メールの内容やメタデータのログを保持することはありません。詳細についてはプライバシーポリシーをご覧ください。",
+    faqLegalQuestion: "一時メールアドレスの使用は合法ですか？",
+    faqLegalAnswer: "はい、一時メールアドレスの使用は完全に合法です。使い捨てメールサービスは、郵便の私書箱と同様の正当なプライバシー保護ツールです。セキュリティ研究者、ジャーナリスト、そしてメインのメールアドレスをスパムやデータ収集から守りたい一般ユーザーに広く利用されています。ただし、登録するウェブサイトの利用規約は必ず遵守してください。",
   },
 };
 

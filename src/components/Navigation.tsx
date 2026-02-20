@@ -22,6 +22,7 @@ const Navigation = ({ currentLanguage = "en", onLanguageChange }: NavigationProp
     { href: "/features", label: "Features" },
     { href: "/blog", label: "Blog" },
     { href: "/faq", label: "FAQ" },
+    { href: "/about", label: "About" },
   ];
 
   const LANGUAGES = [
