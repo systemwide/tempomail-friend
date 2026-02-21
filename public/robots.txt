@@ -11,6 +11,7 @@ Disallow: /email/*
 Allow: /features
 Allow: /faq
 Allow: /blog
+Allow: /about
 Allow: /privacy
 Allow: /terms
 Allow: /contact
