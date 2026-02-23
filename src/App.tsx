@@ -27,7 +27,18 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const [currentAddressId, setCurrentAddressId] = useState<string | null>(null);
+  const [currentAddressId, setCurrentAddressId] = useState<string | null>(() => {
+    return localStorage.getItem("currentAddressId");
+  });
+
+  const handleAddressChange = (id: string | null) => {
+    setCurrentAddressId(id);
+    if (id) {
+      localStorage.setItem("currentAddressId", id);
+    } else {
+      localStorage.removeItem("currentAddressId");
+    }
+  };
   const [currentLanguage, setCurrentLanguage] = useState("en");
 
   return (
@@ -41,7 +52,7 @@ const App = () => {
             <Route path="/" element={
               <Index
                 currentAddressId={currentAddressId}
-                onAddressChange={setCurrentAddressId}
+                onAddressChange={handleAddressChange}
                 currentLanguage={currentLanguage}
                 onLanguageChange={setCurrentLanguage}
               />
